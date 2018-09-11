@@ -1,0 +1,7 @@
+
+Host *
+  User mysql
+  IdentityFile /home/mysql/.ssh/id_rsa
+  StrictHostKeyChecking no
+  CheckHostIP no
+
