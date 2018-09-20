@@ -2,7 +2,7 @@ FROM centos
 MAINTAINER kerrigell@gmail.com
 ENV PERCONA 5.7.23
 ENV MYSQL_PORT 3306
-ENV PERCONA_VERSION 57-5.7.22-22
+ENV PERCONA_VERSION 5.7-5.7.22-22
 ENV PERCONA_DOWN_PATH https://www.percona.com/downloads/Percona-Server-LATEST/Percona-Server-${PERCONA_VERSION}/binary/redhat/7/x86_64
 ENV MHA_DOWN_PATH https://downloads.mariadb.com/MHA
 #### SERVER ROLE ####
