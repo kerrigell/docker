@@ -28,14 +28,18 @@ RUN yum install -y perl net-tools \
 		
 VOLUME ["/data/"]
 WORKDIR /work/depot
-RUN wget ${PERCONA_DOWN_PATH}/Percona-Server-client-${PERCONA_FILE}.x86_64.rpm  && \
-    wget ${PERCONA_DOWN_PATH}/Percona-Server-devel-${PERCONA_FILE}.x86_64.rpm   && \
-    wget ${PERCONA_DOWN_PATH}/Percona-Server-server-${PERCONA_FILE}.x86_64.rpm  && \
-    wget ${PERCONA_DOWN_PATH}/Percona-Server-shared-${PERCONA_FILE}.x86_64.rpm  && \
-    wget ${MHA_DOWN_PATH}/mha4mysql-manager-0.56.tar.gz  && \
-    wget ${MHA_DOWN_PATH}/mha4mysql-node-0.56.tar.gz
+RUN cd /work/depot && \
+    wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-client-${PERCONA_FILE}.x86_64.rpm  && \
+    wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-devel-${PERCONA_FILE}.x86_64.rpm   && \
+    wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-server-${PERCONA_FILE}.x86_64.rpm  && \
+    wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-shared-${PERCONA_FILE}.x86_64.rpm  && \
+    wget -nv ${MHA_DOWN_PATH}/mha4mysql-manager-0.56.tar.gz  && \
+    wget -nv ${MHA_DOWN_PATH}/mha4mysql-node-0.56.tar.gz
 
-RUN	echo "prepare install" && \
+RUN echo "prepare install" && \
+    cd /work/depod && \
+    tar zxvf mha4mysql-manager-0.56.tar.gz && \
+    tar zxvf mha4mysql-node-0.56.tar.gz && \
     cd /work/depot/mha4mysql-node-0.56 && perl Makefile.PL  && make && make install  && \
     cd /work/depot/mha4mysql-manager-0.56 && perl Makefile.PL  && make && make install && \
     groupadd mysql || useradd -m -g mysql  mysql  || echo "ok" && \
