@@ -18,6 +18,7 @@ RUN rm -rf /etc/yum.repos.d/* && \
 	mkdir -p /root/.ssh && mkdir -p /work/depot && \
 	mkdir -p /etc/mysql && \
 	mkdir -p /etc/masterha /var/log/masterha
+
 RUN yum install -y perl net-tools \
 		perl-DBD-MySQL perl-Config-Tiny perl-Log-Dispatch perl-Parallel-ForkManager perl-Module-Install \
 		perl-Data-Dumper \
@@ -28,23 +29,28 @@ RUN yum install -y perl net-tools \
 		
 VOLUME ["/data/"]
 WORKDIR /work/depot
+
+# install mha
+RUN cd /work/depot && \
+    wget -nv ${MHA_DOWN_PATH}/mha4mysql-manager-0.56.tar.gz  && \
+    wget -nv ${MHA_DOWN_PATH}/mha4mysql-node-0.56.tar.gz && \
+    tar zxvf mha4mysql-manager-0.56.tar.gz && \
+    tar zxvf mha4mysql-node-0.56.tar.gz && \
+    cd /work/depot/mha4mysql-node-0.56 && perl Makefile.PL  && make && make install  && \
+    cd /work/depot/mha4mysql-manager-0.56 && perl Makefile.PL  && make && make install && \
+
+# install percona MySQL
 RUN cd /work/depot && \
     wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-client-${PERCONA_FILE}.x86_64.rpm  && \
     wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-devel-${PERCONA_FILE}.x86_64.rpm   && \
     wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-server-${PERCONA_FILE}.x86_64.rpm  && \
     wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-shared-${PERCONA_FILE}.x86_64.rpm  && \
-    wget -nv ${MHA_DOWN_PATH}/mha4mysql-manager-0.56.tar.gz  && \
-    wget -nv ${MHA_DOWN_PATH}/mha4mysql-node-0.56.tar.gz
+    wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-shared-compat-${PERCONA_FILE}.x86_64.rpm  && \
+    yum remove -y  mariadb-libs && \
+    rpm -ivh Percona-Server-*.rpm
 
-RUN echo "prepare install" && \
-    cd /work/depot && \
-    tar zxvf mha4mysql-manager-0.56.tar.gz && \
-    tar zxvf mha4mysql-node-0.56.tar.gz && \
-    cd /work/depot/mha4mysql-node-0.56 && perl Makefile.PL  && make && make install  && \
-    cd /work/depot/mha4mysql-manager-0.56 && perl Makefile.PL  && make && make install && \
-    groupadd mysql || useradd -m -g mysql  mysql  || echo "ok" && \
-	yum remove -y  mariadb-libs && \
-	cd /work/depot && rpm -ivh Percona-Server-*.rpm  && \
+# config system
+RUN groupadd mysql || useradd -m -g mysql  mysql  || echo "ok" && \
 	rm -rf /var/lib/mysql/* && \
 	rm -rf /work/depot/* && \
 	yum clean all && \
