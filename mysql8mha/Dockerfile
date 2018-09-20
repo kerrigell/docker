@@ -37,7 +37,7 @@ RUN cd /work/depot && \
     wget -nv ${MHA_DOWN_PATH}/mha4mysql-node-0.56.tar.gz
 
 RUN echo "prepare install" && \
-    cd /work/depod && \
+    cd /work/depot && \
     tar zxvf mha4mysql-manager-0.56.tar.gz && \
     tar zxvf mha4mysql-node-0.56.tar.gz && \
     cd /work/depot/mha4mysql-node-0.56 && perl Makefile.PL  && make && make install  && \
