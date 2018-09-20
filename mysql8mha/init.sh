@@ -45,3 +45,11 @@ case ${ROLE} in
 esac
 
 /usr/bin/supervisord
+
+if [[ ${MYUSER} ]]; then
+    sleep 5
+    echo "create mysql user: ${MYUSER:=}"
+    mysql << EOF
+grant all on *.* to '${MYUSER}'@'${MYHOST:=%}'indentified by '${MYPWD:=}';
+EOF
+fi
