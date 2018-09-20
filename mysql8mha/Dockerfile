@@ -1,9 +1,9 @@
 FROM centos
 MAINTAINER kerrigell@gmail.com
-ENV PERCONA 5.7.22
+ENV PERCONA 5.7.23
 ENV MYSQL_PORT 3306
-ENV PERCONA_VERSION 57-5.7.22-22.1.el7
-ENV PERCONA_DOWN_PATH https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.32-78.1/binary/redhat/7/x86_64
+ENV PERCONA_VERSION 57-5.7.22-22
+ENV PERCONA_DOWN_PATH https://www.percona.com/downloads/Percona-Server-LATEST/Percona-Server-${PERCONA_VERSION}/binary/redhat/7/x86_64
 ENV MHA_DOWN_PATH https://downloads.mariadb.com/MHA
 #### SERVER ROLE ####
 ## MYSQLM MYSQLS MHAM ##
@@ -28,10 +28,10 @@ RUN yum install -y perl net-tools \
 		
 VOLUME ["/data/"]
 WORKDIR /work/depot
-RUN wget ${PERCONA_DOWN_PATH}/Percona-Server-client-${PERCONA_VERSION}.x86_64.rpm  && \
-    wget ${PERCONA_DOWN_PATH}/Percona-Server-devel-${PERCONA_VERSION}.x86_64.rpm   && \
-    wget ${PERCONA_DOWN_PATH}/Percona-Server-server-${PERCONA_VERSION}.x86_64.rpm  && \
-    wget ${PERCONA_DOWN_PATH}/Percona-Server-shared-${PERCONA_VERSION}.x86_64.rpm  && \
+RUN wget ${PERCONA_DOWN_PATH}/Percona-Server-client-${PERCONA_VERSION}.1.el7.x86_64.rpm  && \
+    wget ${PERCONA_DOWN_PATH}/Percona-Server-devel-${PERCONA_VERSION}.1.el7.x86_64.rpm   && \
+    wget ${PERCONA_DOWN_PATH}/Percona-Server-server-${PERCONA_VERSION}.1.el7.x86_64.rpm  && \
+    wget ${PERCONA_DOWN_PATH}/Percona-Server-shared-${PERCONA_VERSION}.1.el7.x86_64.rpm  && \
     wget ${MHA_DOWN_PATH}/mha4mysql-manager-0.56.tar.gz  && \
     wget ${MHA_DOWN_PATH}/mha4mysql-node-0.56.tar.gz
 
