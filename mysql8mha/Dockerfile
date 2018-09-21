@@ -24,6 +24,7 @@ RUN yum install -y perl net-tools \
 		perl-Data-Dumper \
 		libaio numactl \
 		openssh-server openssh-clients \
+		openssl openssl-devel \
 		supervisor \
         wget
 		
