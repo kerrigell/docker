@@ -63,7 +63,7 @@ RUN groupadd mysql || useradd -m -g mysql  mysql  || echo "ok" && \
 	chmod 700 /root/.ssh && chmod 600 /root/.ssh/* && \
 	chown -R mysql:mysql /home/mysql && chmod 700 /home/mysql/.ssh && chmod 600 /home/mysql/.ssh/*
 
-ADD my.cnf /etc/mysql/my.tpl
+ADD my57.cnf /etc/mysql/my.tpl
 ADD init.sh /tmp/
 ADD supervisord.conf /etc/supervisord.conf
 ADD mhaapp.cnf /etc/masterha/mhaapp.tpl

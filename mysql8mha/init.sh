@@ -1,5 +1,5 @@
 #!/bin/bash
-exec  1>>/var/log/init.sh.log 2>&1
+#exec  1>>/var/log/init.sh.log 2>&1
 
 case ${ROLE} in
 	MYSQLM|MYSQL|MYSQLS)
@@ -9,7 +9,7 @@ case ${ROLE} in
 		INNOBUFFER=${INNOBUFFER:=20M}
 		datadir=/data/my${MYSQL_PORT}
 		max_connection=${MAXCONNECTION:=10}
-		mycnf=${datadir}/my${PORT}.cnf
+		mycnf=/etc/mysql/my${PORT}.cnf
 #		#mycnf=/etc/mysql/my${PORT}.cnf
 		if [[ ! -e ${mycnf} ]]; then
 			echo "`date +"%F %R"` Make MySQL Config:${mycnf}"
@@ -25,13 +25,13 @@ case ${ROLE} in
 		chown -R mysql:mysql ${datadir}
 		if [[ ! (-d ${datadir} && -e ${datadir}/mysql/ && $(du -s ${datadir}/mysql/ | awk '{print $1}') -gt 0) ]]; then
 			echo "`date +"%F %R"` Init MySQL DATA:${mycnf}"
-			mysql_install_db --defaults-file=${mycnf}
+			/usr/bin/mysqld  --defaults-file=${mycnf} --initialize
 			ln -s ${datadir}/my${PORT}.sock /var/lib/mysql/mysql.sock
 		fi
 		if [[ "$?" == "0" ]]; then
 			echo "`date +"%F %R"` Change supervisor Config"
 			sed -i -e ":begin; /mysqld/,/logfile/ {  s/autostart=false/autostart=true/;};" /etc/supervisord.conf
-			sed -i -e "s#command=/usr/bin/mysqld_safe.*#command=/usr/bin/mysqld_safe  --defaults-file=${mycnf}#" /etc/supervisord.conf
+			sed -i -e "s#command=/usr/bin/mysqld_safe.*#command=/usr/bin/mysqld  --defaults-file=${mycnf} --daemonize#" /etc/supervisord.conf
 		fi
 	;;
 	MYSQLS)
@@ -46,10 +46,10 @@ esac
 
 /usr/bin/supervisord
 
-if [[ ${MYUSER} ]]; then
-    sleep 5
-    echo "create mysql user: ${MYUSER:=}"
-    mysql << EOF
-grant all on *.* to '${MYUSER}'@'${MYHOST:=%}'indentified by '${MYPWD:=}';
-EOF
-fi
+#if [[ ${MYUSER} ]]; then
+#    sleep 5
+#    echo "create mysql user: ${MYUSER:=}"
+#    mysql << EOF
+#grant all on *.* to '${MYUSER}'@'${MYHOST:=%}'indentified by '${MYPWD:=}';
+#EOF
+#fi
