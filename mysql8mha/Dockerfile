@@ -26,7 +26,8 @@ RUN yum install -y perl net-tools \
 		openssh-server openssh-clients \
 		openssl openssl-devel \
 		supervisor \
-        wget
+        wget && \
+    yum clean all
 		
 VOLUME ["/data/"]
 WORKDIR /work/depot
@@ -48,13 +49,12 @@ RUN cd /work/depot && \
     wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-shared-${PERCONA_FILE}.x86_64.rpm  && \
     wget -nv ${PERCONA_DOWN_PATH}/Percona-Server-shared-compat-${PERCONA_FILE}.x86_64.rpm  && \
     yum remove -y  mariadb-libs && \
-    rpm -ivh Percona-Server-*.rpm
+    rpm -ivh Percona-Server-*.rpm && \
+    rm -rf /work/depot/*
 
 # config system
 RUN groupadd mysql || useradd -m -g mysql  mysql  || echo "ok" && \
 	rm -rf /var/lib/mysql/* && \
-	rm -rf /work/depot/* && \
-	yum clean all && \
 	mkdir -p /home/mysql/.ssh && \
 	echo "prepare ssh key" && \
 	cd /root/.ssh/ && ssh-keygen -q -N "" -t rsa -f id_rsa && cp id_rsa.pub authorized_keys && \
