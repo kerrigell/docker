@@ -25,13 +25,13 @@ case ${ROLE} in
 		chown -R mysql:mysql ${datadir}
 		if [[ ! (-d ${datadir} && -e ${datadir}/mysql/ && $(du -s ${datadir}/mysql/ | awk '{print $1}') -gt 0) ]]; then
 			echo "`date +"%F %R"` Init MySQL DATA:${mycnf}"
-			/usr/bin/mysqld  --defaults-file=${mycnf} --initialize-insecure --console
+			/usr/sbin/mysqld  --defaults-file=${mycnf} --initialize-insecure --console
 			ln -s ${datadir}/my${PORT}.sock /var/lib/mysql/mysql.sock
 		fi
 		if [[ "$?" == "0" ]]; then
 			echo "`date +"%F %R"` Change supervisor Config"
 			sed -i -e ":begin; /mysqld/,/logfile/ {  s/autostart=false/autostart=true/;};" /etc/supervisord.conf
-			sed -i -e "s#command=/usr/bin/mysqld_safe.*#command=/usr/bin/mysqld  --defaults-file=${mycnf} --daemonize  --daemonize#" /etc/supervisord.conf
+			sed -i -e "s#command=/usr/bin/mysqld_safe.*#command=/usr/sbin/mysqld  --defaults-file=${mycnf} --daemonize  --daemonize#" /etc/supervisord.conf
 		fi
 	;;
 	MYSQLS)
